@@ -5,15 +5,60 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GoldControl - Coleção Exclusiva</title>
     <style>
-        :root { --gold: #d4af37; --bg: #fcfcfc; }
-        body { font-family: 'Playfair Display', serif; background-color: var(--bg); margin: 0; padding: 20px; text-align: center; }
+        :root { 
+            --gold: #d4af37; 
+            --dark-gold: #b8860b;
+            --bg: #fcfcfc; 
+        }
+
+        body { 
+            font-family: 'Playfair Display', serif; 
+            background-color: var(--bg); 
+            margin: 0; 
+            padding: 0; 
+            text-align: center; 
+        }
         
-        .header { margin-bottom: 30px; padding-top: 20px; }
-        .header h1 { color: var(--gold); font-size: 2.5em; margin-bottom: 10px; letter-spacing: 2px; }
-        .header p { color: #666; font-style: italic; }
+        /* Layout do Topo */
+        .header-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px 5%;
+            max-width: 1300px;
+            margin: 0 auto;
+        }
+
+        .logo-box {
+            width: 180px; 
+            height: 80px;
+            background: #f0f0f0; 
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .logo-box img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+
+        .header-text {
+            flex-grow: 1;
+            text-align: center;
+            margin-right: 180px; /* Equilibra o espaço da logo para centralizar o texto */
+        }
+
+        @media (max-width: 768px) {
+            .header-container { flex-direction: column; }
+            .header-text { margin-right: 0; margin-top: 20px; }
+        }
 
         /* Estilo dos Botões de Filtro */
-        .filtros { margin-bottom: 40px; display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
+        .filtros { margin: 30px 0 40px; display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
         .btn-filtro { 
             background: white; 
             border: 1px solid var(--gold); 
@@ -34,6 +79,7 @@
             gap: 30px; 
             max-width: 1200px; 
             margin: 0 auto; 
+            padding: 0 20px;
         }
 
         /* Estilo do Card */
@@ -45,6 +91,9 @@
             transition: 0.3s;
             text-align: center; 
             border: 1px solid #f0f0f0;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
         }
 
         .joia-card:hover { 
@@ -71,8 +120,8 @@
 
         .preco-destaque { 
             color: var(--gold); 
-            font-weight: bold !important; 
-            font-size: 1.5em !important; 
+            font-weight: bold; 
+            font-size: 1.5em; 
             margin: 10px 0; 
             display: block;
         }
@@ -80,17 +129,36 @@
         .detalhes-joia { 
             color: #888; 
             font-size: 0.9em; 
-            margin-top: 5px;
+            margin-bottom: 15px;
             display: block;
-            text-align: center;
         }
+
+        /* Botão de WhatsApp para chamar atenção */
+        .btn-contato {
+            display: inline-block;
+            background-color: #25d366;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 0.9em;
+            transition: 0.3s;
+        }
+        .btn-contato:hover { background-color: #128c7e; transform: scale(1.05); }
     </style>
 </head>
 <body>
 
-    <div class="header">
-        <h1>✨ Nossa Coleção Exclusiva</h1>
-        <p>Peças únicas selecionadas para você</p>
+    <div class="header-container">
+        <div class="logo-box">
+            <img src="https://via.placeholder.com/180x80?text=GOLD+CONTROL" alt="Logo GoldControl">
+        </div>
+
+        <div class="header-text">
+            <h1 style="color: var(--gold); margin: 0; font-size: 2.2em; letter-spacing: 2px;">✨ Nossa Coleção Exclusiva</h1>
+            <p style="color: #666; font-style: italic; margin-top: 5px;">A elegância que você merece, em cada detalhe.</p>
+        </div>
     </div>
 
     <div class="filtros">
@@ -104,15 +172,13 @@
     <div class="catalogo-container" id="catalogo"></div>
 
     <script>
-        // Função Global de Filtragem
         function filtrar(categoriaSelecionada) {
             const todosOsCards = document.querySelectorAll('.joia-card');
             
             todosOsCards.forEach(card => {
                 const categoriaCard = card.getAttribute('data-categoria');
-                
                 if (categoriaSelecionada === 'TUDO' || categoriaCard === categoriaSelecionada) {
-                    card.style.display = "block";
+                    card.style.display = "flex";
                 } else {
                     card.style.display = "none";
                 }
@@ -126,7 +192,6 @@
                 const container = document.getElementById('catalogo');
                 container.innerHTML = '';
 
-                // Filtra apenas o que está DISPONÍVEL
                 const disponiveis = joias.filter(j => j.status === 'DISPONIVEL');
 
                 if (disponiveis.length === 0) {
@@ -142,21 +207,26 @@
                     
                     const card = document.createElement('div');
                     card.className = 'joia-card';
-                    
-                    // CRUCIAL: Adiciona a categoria para o filtro funcionar
                     card.setAttribute('data-categoria', j.categoria); 
 
+                    // Link do WhatsApp dinâmico com o nome da joia
+                    const mensagemWhats = encodeURIComponent(`Olá! Tenho interesse na joia: ${j.nome}`);
+                    const linkWhatsApp = `https://wa.me/5524999999999?text=${mensagemWhats}`; // Ajuste o número
+
                     card.innerHTML = `
-                        <img src="${j.fotoUrl || 'https://via.placeholder.com/250'}" alt="${j.nome}">
-                        <h3>${j.nome}</h3>
-                        <span class="preco-destaque">${precoFormatado}</span>
-                        <span class="detalhes-joia">${j.peso}g</span>
+                        <div>
+                            <img src="${j.fotoUrl || 'https://via.placeholder.com/250'}" alt="${j.nome}">
+                            <h3>${j.nome}</h3>
+                            <span class="preco-destaque">${precoFormatado}</span>
+                            <span class="detalhes-joia">${j.peso}g</span>
+                        </div>
+                        <a href="${linkWhatsApp}" target="_blank" class="btn-contato">Tenho Interesse</a>
                     `;
                     container.appendChild(card);
                 });
             } catch (error) {
                 console.error("Erro ao carregar catálogo:", error);
-                document.getElementById('catalogo').innerHTML = '<p>Erro ao carregar as peças. Tente novamente mais tarde.</p>';
+                document.getElementById('catalogo').innerHTML = '<p>Erro ao carregar as peças.</p>';
             }
         }
 

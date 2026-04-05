@@ -1,5 +1,5 @@
 
-💎 **GOLD CONTROL | Gestão & Catálogo de Joias** 💎
+## 💎 **GOLD CONTROL | Gestão & Catálogo de Joias** 💎
 
 Uma solução Fullstack completa para o setor de joalheria, unindo um sistema de gestão de inventário robusto a um catálogo digital elegante e automatizado. O projeto foi desenhado para operar com **Custo Zero ($0)**, utilizando o máximo potencial de infraestruturas cloud gratuitas e automações inteligentes.
 

@@ -2,72 +2,128 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>GoldControl - Coleção</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GoldControl - Coleção Exclusiva</title>
     <style>
-        :root { --gold: #d4af37; --bg: #fafafa; }
-        body { font-family: 'Playfair Display', serif; background: var(--bg); margin: 0; padding: 40px; }
-        .header { text-align: center; margin-bottom: 50px; }
-        .header h1 { color: var(--gold); font-size: 2.5rem; letter-spacing: 2px; }
+        :root { --gold: #d4af37; --bg: #fcfcfc; }
+        body { font-family: 'Playfair Display', serif; background-color: var(--bg); margin: 0; padding: 20px; text-align: center; }
         
-        /* Grid de Cards */
-        .vitrine { 
+        .header { margin-bottom: 40px; padding-top: 20px; }
+        .header h1 { color: var(--gold); font-size: 2.5em; margin-bottom: 10px; letter-spacing: 2px; }
+        .header p { color: #666; font-style: italic; }
+        
+        /* Grid de Produtos */
+        .catalogo-container { 
             display: grid; 
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); 
             gap: 30px; 
             max-width: 1200px; 
-            margin: auto; 
+            margin: 0 auto; 
         }
 
-        .card { 
+        /* Estilo do Card Corrigido */
+        .joia-card { 
             background: white; 
+            padding: 20px; 
             border-radius: 15px; 
-            overflow: hidden; 
-            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-            transition: transform 0.3s;
-            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05); 
+            transition: 0.3s;
+            text-align: center; /* Garante centralização total */
+            border: 1px solid #f0f0f0;
         }
-        .card:hover { transform: translateY(-10px); }
 
-        .card img { width: 100%; height: 250px; object-fit: cover; }
+        .joia-card:hover { 
+            transform: translateY(-10px); 
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+        }
+
+        .joia-card img { 
+            width: 100%; 
+            height: 250px; 
+            object-fit: contain; 
+            border-radius: 10px; 
+            background: #f9f9f9;
+        }
         
-        .info { padding: 20px; }
-        .info h3 { margin: 10px 0; color: #333; }
-        .price { color: var(--gold); font-weight: bold; font-size: 1.2rem; }
-        .details { font-size: 0.9rem; color: #777; margin-top: 10px; }
+        /* Título em caixa alta conforme solicitado */
+        .joia-card h3 { 
+            color: #333; 
+            font-size: 1.1em; 
+            margin: 15px 0 10px; 
+            text-transform: uppercase; 
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+
+        /* PREÇO EM DESTAQUE - Grande e Negrito */
+        .preco-destaque { 
+            color: var(--gold); 
+            font-weight: bold !important; 
+            font-size: 1.5em !important; 
+            margin: 10px 0; 
+            display: block;
+        }
+
+        /* DETALHES (PESO) - Cinza e sutil */
+        .detalhes-joia { 
+            color: #888; 
+            font-size: 0.9em; 
+            margin-top: 5px;
+            display: block;
+        }
+        .divisor { color: #ccc; margin-left: 3px; font-weight: normal; }
     </style>
 </head>
 <body>
 
-<div class="header">
-    <h1>✨ Nossa Coleção Exclusiva</h1>
-    <p>Peças únicas selecionadas para você</p>
-</div>
-
-<div class="vitrine" id="vitrine">
+    <div class="header">
+        <h1>✨ Nossa Coleção Exclusiva</h1>
+        <p>Peças únicas selecionadas para você</p>
     </div>
 
-<script>
-    async function carregarVitrine() {
-        const res = await fetch('http://localhost:8080/joias');
-        const joias = await res.json();
-        const vitrine = document.getElementById('vitrine');
+    <div class="catalogo-container" id="catalogo">
+        </div>
 
-        // Filtramos para mostrar apenas o que está DISPONÍVEL
-        const disponiveis = joias.filter(j => j.status === 'DISPONIVEL');
+    <script>
+        async function carregarCatalogo() {
+            try {
+                // Busca as joias da API
+                const response = await fetch('/joias');
+                const joias = await response.json();
+                const container = document.getElementById('catalogo');
+                container.innerHTML = '';
 
-        disponiveis.forEach(j => {
-            vitrine.innerHTML += `
-                <div class="card">
-                    <img src="${j.fotoUrl || 'https://via.placeholder.com/300'}" alt="${j.nome}">
-                    <div class="info">
+                // Filtra apenas o que está DISPONÍVEL
+                const disponiveis = joias.filter(j => j.status === 'DISPONIVEL');
+
+                if (disponiveis.length === 0) {
+                    container.innerHTML = '<p style="grid-column: 1/-1; color: #999;">No momento, todas as nossas peças exclusivas foram reservadas.</p>';
+                    return;
+                }
+
+                disponiveis.forEach(j => {
+                    const precoFormatado = j.precoFixo.toLocaleString('pt-BR', { 
+                        style: 'currency', 
+                        currency: 'BRL' 
+                    });
+                    
+                    const card = document.createElement('div');
+                    card.className = 'joia-card';
+                    card.innerHTML = `
+                        <img src="${j.fotoUrl || 'https://via.placeholder.com/250'}" alt="${j.nome}">
                         <h3>${j.nome}</h3>
-                        <p class="price">R$ ${j.precoFixo}</p>
-                        <p class="details">${j.peso}g | ${j.descricao || ''}</p>
-                    </div>
-                </div>`;
-        });
-    }
-    carregarVitrine();
-</script>
+                        <span class="preco-destaque">${precoFormatado}</span>
+                        <span class="detalhes-joia">${j.peso}g <span class="divisor">|</span></span>
+                    `;
+                    container.appendChild(card);
+                });
+            } catch (error) {
+                console.error("Erro ao carregar catálogo:", error);
+                document.getElementById('catalogo').innerHTML = '<p>Erro ao carregar as peças. Tente novamente mais tarde.</p>';
+            }
+        }
+
+        carregarCatalogo();
+    </script>
 </body>
 </html>

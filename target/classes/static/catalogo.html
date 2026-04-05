@@ -8,9 +8,24 @@
         :root { --gold: #d4af37; --bg: #fcfcfc; }
         body { font-family: 'Playfair Display', serif; background-color: var(--bg); margin: 0; padding: 20px; text-align: center; }
         
-        .header { margin-bottom: 40px; padding-top: 20px; }
+        .header { margin-bottom: 30px; padding-top: 20px; }
         .header h1 { color: var(--gold); font-size: 2.5em; margin-bottom: 10px; letter-spacing: 2px; }
         .header p { color: #666; font-style: italic; }
+
+        /* Estilo dos Botões de Filtro */
+        .filtros { margin-bottom: 40px; display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
+        .btn-filtro { 
+            background: white; 
+            border: 1px solid var(--gold); 
+            color: #333; 
+            padding: 8px 20px; 
+            border-radius: 20px; 
+            cursor: pointer; 
+            transition: 0.3s;
+            font-family: 'Playfair Display', serif;
+            font-weight: 600;
+        }
+        .btn-filtro:hover { background: var(--gold); color: white; }
         
         /* Grid de Produtos */
         .catalogo-container { 
@@ -21,14 +36,14 @@
             margin: 0 auto; 
         }
 
-        /* Estilo do Card Corrigido */
+        /* Estilo do Card */
         .joia-card { 
             background: white; 
             padding: 20px; 
             border-radius: 15px; 
             box-shadow: 0 4px 15px rgba(0,0,0,0.05); 
             transition: 0.3s;
-            text-align: center; /* Garante centralização total */
+            text-align: center; 
             border: 1px solid #f0f0f0;
         }
 
@@ -45,7 +60,6 @@
             background: #f9f9f9;
         }
         
-        /* Título em caixa alta conforme solicitado */
         .joia-card h3 { 
             color: #333; 
             font-size: 1.1em; 
@@ -55,7 +69,6 @@
             letter-spacing: 1px;
         }
 
-        /* PREÇO EM DESTAQUE - Grande e Negrito */
         .preco-destaque { 
             color: var(--gold); 
             font-weight: bold !important; 
@@ -64,14 +77,13 @@
             display: block;
         }
 
-        /* DETALHES (PESO) - Cinza e sutil */
         .detalhes-joia { 
             color: #888; 
             font-size: 0.9em; 
             margin-top: 5px;
             display: block;
+            text-align: center;
         }
-        .divisor { color: #ccc; margin-left: 3px; font-weight: normal; }
     </style>
 </head>
 <body>
@@ -81,13 +93,34 @@
         <p>Peças únicas selecionadas para você</p>
     </div>
 
-    <div class="catalogo-container" id="catalogo">
-        </div>
+    <div class="filtros">
+        <button onclick="filtrar('TUDO')" class="btn-filtro">Todos</button>
+        <button onclick="filtrar('ANEL')" class="btn-filtro">Anéis</button>
+        <button onclick="filtrar('PULSEIRA')" class="btn-filtro">Pulseiras</button>
+        <button onclick="filtrar('CORRENTE')" class="btn-filtro">Correntes</button>
+        <button onclick="filtrar('PINGENTE')" class="btn-filtro">Pingentes</button>
+    </div>
+
+    <div class="catalogo-container" id="catalogo"></div>
 
     <script>
+        // Função Global de Filtragem
+        function filtrar(categoriaSelecionada) {
+            const todosOsCards = document.querySelectorAll('.joia-card');
+            
+            todosOsCards.forEach(card => {
+                const categoriaCard = card.getAttribute('data-categoria');
+                
+                if (categoriaSelecionada === 'TUDO' || categoriaCard === categoriaSelecionada) {
+                    card.style.display = "block";
+                } else {
+                    card.style.display = "none";
+                }
+            });
+        }
+
         async function carregarCatalogo() {
             try {
-                // Busca as joias da API
                 const response = await fetch('/joias');
                 const joias = await response.json();
                 const container = document.getElementById('catalogo');
@@ -109,11 +142,15 @@
                     
                     const card = document.createElement('div');
                     card.className = 'joia-card';
+                    
+                    // CRUCIAL: Adiciona a categoria para o filtro funcionar
+                    card.setAttribute('data-categoria', j.categoria); 
+
                     card.innerHTML = `
                         <img src="${j.fotoUrl || 'https://via.placeholder.com/250'}" alt="${j.nome}">
                         <h3>${j.nome}</h3>
                         <span class="preco-destaque">${precoFormatado}</span>
-                        <span class="detalhes-joia">${j.peso}g <span class="divisor">|</span></span>
+                        <span class="detalhes-joia">${j.peso}g</span>
                     `;
                     container.appendChild(card);
                 });

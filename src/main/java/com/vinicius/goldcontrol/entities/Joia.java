@@ -25,8 +25,10 @@ public class Joia {
     private Integer pureza;
     private Double precoFixo;
     
-    // Este campo permitirá exibir as imagens que você quer no front-end
     private String fotoUrl; 
+    
+    // Nova coluna que você criou no banco
+    private String categoria; 
     
     @Enumerated(EnumType.STRING)
     private StatusJoia status;

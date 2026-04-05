@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>GoldControl - Premium</title>
+    <style>
+        :root { --gold: #d4af37; --dark: #2c3e50; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f0f2f5; margin: 0; padding: 20px; }
+        .container { max-width: 1000px; margin: auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
+        
+        h1 { color: var(--gold); text-align: center; margin-bottom: 30px; }
+        
+        /* Formulário */
+        .form-group { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 20px; padding: 20px; background: #fafafa; border-radius: 8px; }
+        input, select { padding: 10px; border: 1px solid #ddd; border-radius: 5px; }
+        button { padding: 10px 20px; cursor: pointer; border: none; border-radius: 5px; transition: 0.3s; }
+        .btn-add { background: var(--gold); color: white; font-weight: bold; width: 100%; grid-column: 1 / -1; }
+        
+        /* Busca */
+        .search-box { margin-bottom: 20px; width: 100%; padding: 12px; font-size: 16px; border: 2px solid var(--gold); border-radius: 8px; }
+
+        /* Tabela */
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th { background: var(--gold); color: white; padding: 15px; text-align: left; }
+        td { padding: 12px; border-bottom: 1px solid #eee; vertical-align: middle; }
+        .foto-preview { width: 60px; height: 60px; object-fit: cover; border-radius: 8px; border: 1px solid #ddd; background: #eee; }
+        
+        /* Ações */
+        .btn-edit { background: #f1c40f; color: white; margin-right: 5px; }
+        .btn-delete { background: #e74c3c; color: white; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>💎 GoldControl - Gestão de Joias</h1>
+
+    <div class="form-group" id="form-joia">
+        <input type="hidden" id="joia-id">
+        <input type="text" id="nome" placeholder="Nome da Joia">
+        <input type="number" id="peso" placeholder="Peso (g)" step="0.01">
+        <input type="number" id="preco" placeholder="Preço (R$)">
+        <input type="text" id="fotoUrl" placeholder="Ex: imagens/anel.jpg">
+        <select id="status">
+            <option value="DISPONIVEL">Disponível</option>
+            <option value="RESERVADO">Reservado</option>
+            <option value="VENDIDO">Vendido</option>
+            <option value="REFINO">Refino</option>
+        </select>
+        <button class="btn-add" onclick="salvarJoia()">Salvar Joia</button>
+    </div>
+
+    <input type="text" class="search-box" id="inputBusca" onkeyup="filtrarTabela()" placeholder="🔍 Pesquisar por nome da joia...">
+
+    <table id="tabela-joias">
+        <thead>
+            <tr>
+                <th>Foto</th>
+                <th>Nome</th>
+                <th>Peso</th>
+                <th>Preço</th>
+                <th>Status</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+</div>
+
+<script>
+    const API_URL = 'http://localhost:8080/joias';
+
+    async function carregarJoias() {
+        const res = await fetch(API_URL);
+        const joias = await res.json();
+        const tbody = document.querySelector('#tabela-joias tbody');
+        tbody.innerHTML = '';
+
+        joias.forEach(j => {
+            const caminhoFoto = j.fotoUrl && !j.fotoUrl.startsWith('http') 
+                                ? j.fotoUrl 
+                                : (j.fotoUrl || 'https://via.placeholder.com/60');
+
+            tbody.innerHTML += `
+                <tr>
+                    <td><img src="${caminhoFoto}" class="foto-preview" onerror="this.src='https://via.placeholder.com/60?text=Erro'"></td>
+                    <td>${j.nome}</td>
+                    <td>${j.peso}g</td>
+                    <td>R$ ${j.precoFixo}</td>
+                    <td>${j.status}</td>
+                    <td>
+                        <button class="btn-edit" onclick="preencherForm(${JSON.stringify(j).replace(/"/g, '&quot;')})">Editar</button>
+                        <button class="btn-delete" onclick="excluirJoia(${j.id})">Excluir</button>
+                    </td>
+                </tr>`;
+        });
+    }
+
+    async function salvarJoia() {
+        const id = document.getElementById('joia-id').value;
+        const dados = {
+            nome: document.getElementById('nome').value,
+            peso: document.getElementById('peso').value,
+            precoFixo: document.getElementById('preco').value,
+            status: document.getElementById('status').value,
+            fotoUrl: document.getElementById('fotoUrl').value
+        };
+
+        const metodo = id ? 'PUT' : 'POST';
+        const url = id ? `${API_URL}/${id}` : API_URL;
+
+        const response = await fetch(url, {
+            method: metodo,
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(dados)
+        });
+
+        if (response.ok) {
+            limparForm();
+            carregarJoias();
+        } else {
+            alert("Erro ao salvar! Verifique se os campos estão corretos.");
+        }
+    }
+
+    async function excluirJoia(id) {
+        if(confirm("Deseja realmente excluir esta joia?")) {
+            await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
+            carregarJoias();
+        }
+    }
+
+    function preencherForm(j) {
+        document.getElementById('joia-id').value = j.id;
+        document.getElementById('nome').value = j.nome;
+        document.getElementById('peso').value = j.peso;
+        document.getElementById('preco').value = j.precoFixo;
+        document.getElementById('status').value = j.status;
+        document.getElementById('fotoUrl').value = j.fotoUrl || '';
+        window.scrollTo(0,0);
+    }
+
+    function limparForm() {
+        document.getElementById('joia-id').value = '';
+        document.getElementById('nome').value = '';
+        document.getElementById('peso').value = '';
+        document.getElementById('preco').value = '';
+        document.getElementById('fotoUrl').value = '';
+    }
+
+    function filtrarTabela() {
+        let input = document.getElementById("inputBusca").value.toUpperCase();
+        let trs = document.getElementById("tabela-joias").getElementsByTagName("tr");
+
+        for (let i = 1; i < trs.length; i++) {
+            let td = trs[i].getElementsByTagName("td")[1];
+            if (td) {
+                let texto = td.textContent || td.innerText;
+                trs[i].style.display = texto.toUpperCase().indexOf(input) > -1 ? "" : "none";
+            }
+        }
+    }
+
+    carregarJoias();
+</script>
+</body>
+</html>

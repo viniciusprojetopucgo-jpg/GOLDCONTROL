@@ -177,7 +177,8 @@
             
             todosOsCards.forEach(card => {
                 const categoriaCard = card.getAttribute('data-categoria');
-                if (categoriaSelecionada === 'TUDO' || categoriaCard === categoriaSelecionada) {
+                // O .toUpperCase() transforma tudo em MAIÚSCULO antes de comparar
+                if (categoriaSelecionada === 'TUDO' || (categoriaCard && categoriaCard.toUpperCase() === categoriaSelecionada.toUpperCase())) {
                     card.style.display = "flex";
                 } else {
                     card.style.display = "none";
@@ -211,7 +212,7 @@
 
                     // Link do WhatsApp dinâmico com o nome da joia
                     const mensagemWhats = encodeURIComponent(`Olá! Tenho interesse na joia: ${j.nome}`);
-                    const linkWhatsApp = `https://wa.me/5524999999999?text=${mensagemWhats}`; // Ajuste o número
+                    const linkWhatsApp = `https://wa.me/5524981366436?text=${mensagemWhats}`; // Ajuste o número
 
                     card.innerHTML = `
                         <div>

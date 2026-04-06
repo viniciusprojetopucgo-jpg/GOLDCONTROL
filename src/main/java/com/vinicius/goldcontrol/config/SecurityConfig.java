@@ -13,15 +13,16 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-            .csrf(csrf -> csrf.disable()) // Desabilitado para facilitar os testes iniciais de POST
+            .csrf(csrf -> csrf.disable()) // Desabilitado para facilitar os testes de integração
             .authorizeHttpRequests(auth -> auth
-                // Libera o catálogo, as imagens das joias e o CSS para os clientes
-                .requestMatchers("/catalogo.html", "/imagens/**", "/css/**").permitAll()
-                // Exige login para o index.html (painel administrativo) e APIs de controle
+                // LIBERADO: Catálogo, API de Joias, Imagens e CSS para acesso público
+                .requestMatchers("/catalogo.html", "/joias/**", "/imagens/**", "/css/**").permitAll()
+                
+                // RESTRITO: Todo o resto (como o index.html) exige login
                 .anyRequest().authenticated()
             )
             .formLogin(form -> form
-                // Após o login com sucesso, vai direto para o painel de gestão
+                // Redireciona para o painel de gestão após o login administrativo
                 .defaultSuccessUrl("/index.html", true)
                 .permitAll()
             )

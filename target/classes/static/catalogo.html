@@ -4,169 +4,390 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GoldControl - Coleção Exclusiva</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;800&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
     <style>
         :root { 
             --gold: #d4af37; 
             --dark-gold: #b8860b;
-            --bg: #fcfcfc; 
+            --light-gold: #f4e4b9;
+            --bg: #0f0f0f;
+            --card-bg: #1a1a1a;
+            --text-light: #f5f5f5;
+            --accent: #ffd700;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
         body { 
-            font-family: 'Playfair Display', serif; 
-            background-color: var(--bg); 
-            margin: 0; 
-            padding: 0; 
-            text-align: center; 
+            font-family: 'Lato', sans-serif; 
+            background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 50%, #0a0a0a 100%);
+            color: var(--text-light);
+            text-align: center;
+            overflow-x: hidden;
         }
-        
-        /* Layout do Topo */
+
+        /* Animações */
+        @keyframes slideInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes glow {
+            0%, 100% { text-shadow: 0 0 20px rgba(212, 175, 55, 0.5); }
+            50% { text-shadow: 0 0 40px rgba(212, 175, 55, 0.8); }
+        }
+
+        @keyframes shimmer {
+            0% { background-position: -1000px 0; }
+            100% { background-position: 1000px 0; }
+        }
+
+        /* Hero Section */
+        .hero-section {
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.1) 0%, rgba(184, 134, 11, 0.05) 100%);
+            padding: 60px 20px;
+            border-bottom: 2px solid var(--gold);
+            animation: slideInDown 0.8s ease-out;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--gold), transparent);
+        }
+
         .header-container {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 20px 5%;
-            max-width: 1300px;
+            max-width: 1400px;
             margin: 0 auto;
+            gap: 40px;
         }
 
         .logo-box {
-            width: 180px; 
-            height: 80px;
-            background: #f0f0f0; 
+            width: 120px; 
+            height: 120px;
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.2), rgba(212, 175, 55, 0.05));
             display: flex;
             align-items: center;
             justify-content: center;
-            border-radius: 8px;
+            border-radius: 15px;
             overflow: hidden;
+            border: 2px solid var(--gold);
+            flex-shrink: 0;
+            box-shadow: 0 0 30px rgba(212, 175, 55, 0.2);
+            transition: 0.3s;
+        }
+
+        .logo-box:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 50px rgba(212, 175, 55, 0.4);
         }
 
         .logo-box img {
-            max-width: 100%;
-            max-height: 100%;
+            max-width: 90%;
+            max-height: 90%;
             object-fit: contain;
         }
 
         .header-text {
             flex-grow: 1;
             text-align: center;
-            margin-right: 180px; /* Equilibra o espaço da logo para centralizar o texto */
+        }
+
+        .header-text h1 {
+            color: var(--gold);
+            font-size: 3.5em;
+            font-family: 'Playfair Display', serif;
+            font-weight: 800;
+            letter-spacing: 4px;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            animation: glow 2s ease-in-out infinite;
+        }
+
+        .header-text p {
+            color: var(--light-gold);
+            font-size: 1.2em;
+            font-style: italic;
+            font-weight: 300;
+            letter-spacing: 2px;
+            text-transform: uppercase;
         }
 
         @media (max-width: 768px) {
-            .header-container { flex-direction: column; }
-            .header-text { margin-right: 0; margin-top: 20px; }
+            .header-container { 
+                flex-direction: column;
+                gap: 20px;
+            }
+            .header-text h1 {
+                font-size: 2.2em;
+            }
+            .header-text p {
+                font-size: 0.9em;
+            }
+        }
+
+        /* Divisor decorativo */
+        .divider {
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--gold), transparent);
+            margin: 40px 0;
+            max-width: 200px;
+            margin-left: auto;
+            margin-right: auto;
         }
 
         /* Estilo dos Botões de Filtro */
-        .filtros { margin: 30px 0 40px; display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
+        .filtros { 
+            margin: 50px 0;
+            display: flex; 
+            justify-content: center; 
+            gap: 15px; 
+            flex-wrap: wrap;
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
+            padding: 0 20px;
+        }
+
         .btn-filtro { 
-            background: white; 
-            border: 1px solid var(--gold); 
-            color: #333; 
-            padding: 8px 20px; 
-            border-radius: 20px; 
+            background: transparent;
+            border: 2px solid var(--gold);
+            color: var(--gold);
+            padding: 12px 28px; 
+            border-radius: 50px;
             cursor: pointer; 
-            transition: 0.3s;
+            transition: all 0.3s ease;
             font-family: 'Playfair Display', serif;
             font-weight: 600;
+            font-size: 1em;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            position: relative;
+            overflow: hidden;
         }
-        .btn-filtro:hover { background: var(--gold); color: white; }
+
+        .btn-filtro::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn-filtro:hover {
+            background: var(--gold);
+            color: #000;
+            box-shadow: 0 0 30px rgba(212, 175, 55, 0.5);
+            transform: translateY(-3px);
+        }
+
+        .btn-filtro:hover::before {
+            left: 100%;
+        }
         
         /* Grid de Produtos */
         .catalogo-container { 
             display: grid; 
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); 
-            gap: 30px; 
-            max-width: 1200px; 
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); 
+            gap: 40px; 
+            max-width: 1400px; 
             margin: 0 auto; 
-            padding: 0 20px;
+            padding: 40px 20px;
         }
 
         /* Estilo do Card */
         .joia-card { 
-            background: white; 
-            padding: 20px; 
-            border-radius: 15px; 
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05); 
-            transition: 0.3s;
+            background: var(--card-bg);
+            padding: 0;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
             text-align: center; 
-            border: 1px solid #f0f0f0;
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+        }
+
+        .joia-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--gold), transparent);
+            opacity: 0;
+            transition: opacity 0.4s;
+        }
+
+        .joia-card:hover {
+            transform: translateY(-15px) scale(1.02);
+            box-shadow: 0 25px 60px rgba(212, 175, 55, 0.3);
+            border-color: var(--gold);
+        }
+
+        .joia-card:hover::before {
+            opacity: 1;
+        }
+
+        .image-wrapper {
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.1), rgba(212, 175, 55, 0.05));
+            padding: 30px;
+            aspect-ratio: 1;
+        }
+
+        .joia-card img { 
+            width: 100%; 
+            height: 100%;
+            object-fit: contain;
+            transition: transform 0.4s ease;
+        }
+
+        .joia-card:hover img {
+            transform: scale(1.1) rotate(2deg);
+        }
+        
+        .card-info {
+            padding: 25px;
+            flex-grow: 1;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
         }
 
-        .joia-card:hover { 
-            transform: translateY(-10px); 
-            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
-        }
-
-        .joia-card img { 
-            width: 100%; 
-            height: 250px; 
-            object-fit: contain; 
-            border-radius: 10px; 
-            background: #f9f9f9;
-        }
-        
         .joia-card h3 { 
-            color: #333; 
-            font-size: 1.1em; 
-            margin: 15px 0 10px; 
+            color: var(--gold);
+            font-size: 1.3em; 
+            margin: 0 0 10px 0;
             text-transform: uppercase; 
-            font-weight: 600;
-            letter-spacing: 1px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            font-family: 'Playfair Display', serif;
         }
 
-        .preco-destaque { 
-            color: var(--gold); 
-            font-weight: bold; 
-            font-size: 1.5em; 
-            margin: 10px 0; 
-            display: block;
+        .preco-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--gold), var(--dark-gold));
+            color: #000;
+            padding: 12px 25px;
+            border-radius: 50px;
+            font-weight: bold;
+            font-size: 1.4em;
+            margin: 15px 0;
+            box-shadow: 0 5px 20px rgba(212, 175, 55, 0.3);
         }
 
         .detalhes-joia { 
-            color: #888; 
-            font-size: 0.9em; 
-            margin-bottom: 15px;
+            color: #aaa;
+            font-size: 0.95em; 
+            margin-bottom: 20px;
             display: block;
+            letter-spacing: 0.5px;
         }
 
         /* Botão de WhatsApp para chamar atenção */
         .btn-contato {
             display: inline-block;
-            background-color: #25d366;
+            background: linear-gradient(135deg, #25d366, #128c7e);
             color: white;
-            padding: 10px 20px;
+            padding: 14px 30px;
             border-radius: 50px;
             text-decoration: none;
-            font-weight: bold;
-            font-size: 0.9em;
-            transition: 0.3s;
+            font-weight: 700;
+            font-size: 1em;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
         }
-        .btn-contato:hover { background-color: #128c7e; transform: scale(1.05); }
+
+        .btn-contato::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.2);
+            transition: left 0.4s;
+        }
+
+        .btn-contato:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(37, 211, 102, 0.4);
+        }
+
+        .btn-contato:hover::before {
+            left: 100%;
+        }
+
+        /* Mensagem vazia */
+        .empty-message {
+            grid-column: 1 / -1;
+            padding: 60px 20px;
+            color: #888;
+            font-size: 1.2em;
+        }
     </style>
 </head>
 <body>
 
-    <div class="header-container">
-        <div class="logo-box">
-            <img src="imagens/sua_logo.png" alt="Logo GoldControl">
-        </div>
+    <div class="hero-section">
+        <div class="header-container">
+            <div class="logo-box">
+                <img src="imagens/sua_logo.png" alt="Logo GoldControl">
+            </div>
 
-        <div class="header-text">
-            <h1 style="color: var(--gold); margin: 0; font-size: 2.2em; letter-spacing: 2px;">✨ Nossa Coleção Exclusiva</h1>
-            <p style="color: #666; font-style: italic; margin-top: 5px;">A elegância que você merece, em cada detalhe.</p>
+            <div class="header-text">
+                <h1>✨ GoldControl ✨</h1>
+                <p>Coleção Exclusiva de Luxo</p>
+            </div>
         </div>
+        <div class="divider"></div>
+        <p style="color: var(--light-gold); font-size: 1.1em; margin-top: 25px; font-style: italic; letter-spacing: 1px;">
+            A Elegância que Você Merece, em Cada Detalhe
+        </p>
     </div>
 
+
     <div class="filtros">
-        <button onclick="filtrar('TUDO')" class="btn-filtro">Todos</button>
-        <button onclick="filtrar('ANEL')" class="btn-filtro">Anéis</button>
-        <button onclick="filtrar('PULSEIRA')" class="btn-filtro">Pulseiras</button>
-        <button onclick="filtrar('CORRENTE')" class="btn-filtro">Correntes</button>
-        <button onclick="filtrar('PINGENTE')" class="btn-filtro">Pingentes</button>
+        <button onclick="filtrar('TUDO')" class="btn-filtro">🔍 Todos</button>
+        <button onclick="filtrar('ANEL')" class="btn-filtro">💍 Anéis</button>
+        <button onclick="filtrar('PULSEIRA')" class="btn-filtro">✨ Pulseiras</button>
+        <button onclick="filtrar('CORRENTE')" class="btn-filtro">⛓️ Correntes</button>
+        <button onclick="filtrar('PINGENTE')" class="btn-filtro">💎 Pingentes</button>
     </div>
 
     <div class="catalogo-container" id="catalogo"></div>
@@ -177,18 +398,21 @@
             
             todosOsCards.forEach(card => {
                 const categoriaCard = card.getAttribute('data-categoria');
-                // O .toUpperCase() transforma tudo em MAIÚSCULO antes de comparar
                 if (categoriaSelecionada === 'TUDO' || (categoriaCard && categoriaCard.toUpperCase() === categoriaSelecionada.toUpperCase())) {
                     card.style.display = "flex";
+                    setTimeout(() => {
+                        card.style.opacity = "1";
+                    }, 10);
                 } else {
                     card.style.display = "none";
+                    card.style.opacity = "0";
                 }
             });
         }
 
         async function carregarCatalogo() {
             try {
-                const response = await fetch('/joias');
+                const response = await fetch('https://goldcontrol-production.up.railway.app/joias');
                 const joias = await response.json();
                 const container = document.getElementById('catalogo');
                 container.innerHTML = '';
@@ -196,11 +420,11 @@
                 const disponiveis = joias.filter(j => j.status === 'DISPONIVEL');
 
                 if (disponiveis.length === 0) {
-                    container.innerHTML = '<p style="grid-column: 1/-1; color: #999;">No momento, todas as nossas peças exclusivas foram reservadas.</p>';
+                    container.innerHTML = '<div class="empty-message">✨ No momento, todas as nossas peças exclusivas foram reservadas. Aguarde em breve novas peças! ✨</div>';
                     return;
                 }
 
-                disponiveis.forEach(j => {
+                disponiveis.forEach((j, index) => {
                     const precoFormatado = j.precoFixo.toLocaleString('pt-BR', { 
                         style: 'currency', 
                         currency: 'BRL' 
@@ -208,26 +432,31 @@
                     
                     const card = document.createElement('div');
                     card.className = 'joia-card';
-                    card.setAttribute('data-categoria', j.categoria); 
+                    card.setAttribute('data-categoria', j.categoria);
+                    card.style.opacity = '0';
+                    card.style.animation = `slideInDown 0.5s ease-out ${index * 0.1}s forwards`;
 
-                    // Link do WhatsApp dinâmico com o nome da joia
-                    const mensagemWhats = encodeURIComponent(`Olá! Tenho interesse na joia: ${j.nome}`);
-                    const linkWhatsApp = `https://wa.me/5524981366436?text=${mensagemWhats}`; // Ajuste o número
+                    const mensagemWhats = encodeURIComponent(`Olá! 👋 Tenho interesse nesta joia exclusiva: *${j.nome}* - ${precoFormatado}`);
+                    const linkWhatsApp = `https://wa.me/5524981366436?text=${mensagemWhats}`;
 
                     card.innerHTML = `
-                        <div>
-                            <img src="${j.fotoUrl || 'https://via.placeholder.com/250'}" alt="${j.nome}">
-                            <h3>${j.nome}</h3>
-                            <span class="preco-destaque">${precoFormatado}</span>
-                            <span class="detalhes-joia">${j.peso}g</span>
+                        <div class="image-wrapper">
+                            <img src="${j.fotoUrl || 'https://via.placeholder.com/250?text=Joia'}" alt="${j.nome}">
                         </div>
-                        <a href="${linkWhatsApp}" target="_blank" class="btn-contato">Tenho Interesse</a>
+                        <div class="card-info">
+                            <div>
+                                <h3>${j.nome}</h3>
+                                <div class="preco-badge">${precoFormatado}</div>
+                                <span class="detalhes-joia">⚖️ Peso: ${j.peso}g</span>
+                            </div>
+                            <a href="${linkWhatsApp}" target="_blank" class="btn-contato">💬 Tenho Interesse</a>
+                        </div>
                     `;
                     container.appendChild(card);
                 });
             } catch (error) {
                 console.error("Erro ao carregar catálogo:", error);
-                document.getElementById('catalogo').innerHTML = '<p>Erro ao carregar as peças.</p>';
+                document.getElementById('catalogo').innerHTML = '<div class="empty-message">⚠️ Erro ao carregar as peças. Tente novamente mais tarde.</div>';
             }
         }
 
